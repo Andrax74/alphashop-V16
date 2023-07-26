@@ -1,0 +1,13 @@
+<a class="dropdown-toggle" data-bs-toggle="dropdown" href="#">
+  <img class="img-xs rounded-circle" *ngIf="isLogged" src="/assets/images/avatars/avatar4.jpg" alt="User" width="35" height="35">
+  <img class="img-xs rounded-circle"  *ngIf="!isLogged" src="/assets/images/avatars/offline_user.png" alt="User" width="35" height="35">
+</a>
+<div class="dropdown-menu dropdown-menu-end">
+  <a class="dropdown-item" routerLink="/login">Accedi</a>
+  <a class="dropdown-item" routerLink="/signup">Registrati</a>
+  <a class="dropdown-item disabled" *ngIf="!isLogged" href="#">Settings</a>
+  <a class="dropdown-item" *ngIf="isLogged" routerLink="/user/settings">Settings</a>
+  <hr class="dropdown-divider">
+  <a class="dropdown-item text-danger" *ngIf="isLogged" routerLink="/logout">Logout {{userName}}</a>
+  <a class="dropdown-item disabled" *ngIf="!isLogged" routerLink="/logout">Logout</a>
+</div>
