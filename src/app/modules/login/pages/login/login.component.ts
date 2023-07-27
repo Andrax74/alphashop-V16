@@ -17,10 +17,14 @@ export class LoginComponent implements OnInit {
 
   autenticato : boolean = true;
   notlogged : boolean = false;
-  filter$: Observable<string | null> = of("");
+  expired : boolean = false;
+
+  nologged$: Observable<string | null> = of("");
+  expired$: Observable<string | null> = of("");
 
   errMsg : string = 'Spiacente, la userid o la password sono errati!';
   errMsg2: string = "Spiacente, devi autenticarti per poter accedere alla pagina selezionata!";
+  errMsg3: string = "Sessione Scaduta! Eserguire nuovamente l'accesso!";
 
   constructor(
     private route: Router,
@@ -28,17 +32,24 @@ export class LoginComponent implements OnInit {
     private Auth: AuthJwtService) {}
 
   ngOnInit(): void {
-    this.filter$ = this.activeRoute.queryParamMap.pipe(
+    this.nologged$ = this.activeRoute.queryParamMap.pipe(
       map((params: ParamMap) => params.get('nologged')),
     );
+    this.nologged$.subscribe(param => (param) ? this.notlogged = true : this.notlogged = false);
 
-    this.filter$.subscribe(param => (param) ? this.notlogged = true : this.notlogged = false);
+    this.expired$ = this.activeRoute.queryParamMap.pipe(
+      map((params: ParamMap) => params.get('expired')),
+    );
+    this.expired$.subscribe(param => (param) ? this.expired = true : this.expired = false);
   }
 
   titolo: string = "Accesso & Autenticazione";
   sottotitolo: string = "Procedi ad inserire la userid e la password";
 
   gestAuth = () => {
+
+      this.expired = false;
+      this.notlogged = false;
 
       this.Auth.autenticaService(this.userId, this.password).subscribe({
 

@@ -22,7 +22,10 @@
           </div>
           <div class="alert alert-danger" role="alert" *ngIf='notlogged'>
             {{errMsg2}}
-        </div>
+          </div>
+          <div class="alert alert-danger" role="alert" *ngIf='expired'>
+            {{errMsg3}}
+          </div>
       </div>
   </div>
 </div>

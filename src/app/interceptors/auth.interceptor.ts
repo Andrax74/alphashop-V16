@@ -5,6 +5,8 @@ import {
   HttpRequest
 } from '@angular/common/http';
 
+import { AppCookieService } from '../core/services/app-cookie.service';
+import { AuthJwtService } from '../core/services/authJwt.service';
 import { AuthappService } from '../core/services/authapp.service';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
@@ -12,16 +14,24 @@ import { Observable } from 'rxjs';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private BasicAuth: AuthappService) {}
+  constructor(
+    private Auth: AuthJwtService,
+    private storageService : AppCookieService) {}
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
 
     let AuthHeader : string = "";
-    var AuthToken =  sessionStorage.getItem("AuthToken");
+    var authToken = this.storageService.get("AuthToken");
+    var newToken = "";
 
-    AuthHeader = (AuthToken) ? AuthToken : "";
+    if (authToken) {
+      this.Auth.refreshToken(authToken);
+      newToken = this.storageService.get("AuthToken");
+    }
 
-    if (this.BasicAuth.loggedUser()) {
+    AuthHeader = (newToken) ? newToken : "";
+
+    if (this.Auth.loggedUser()) {
       request = request.clone({
         setHeaders : {Authorization : AuthHeader}
       });
